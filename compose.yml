@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  opensearch:
+    container_name: opensearch
+    build:
+      context: .
+      dockerfile: OpenSearch/Dockerfile
+    volumes:
+      - ./OpenSearch/data:/usr/share/opensearch/data
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "DISABLE_INSTALL_DEMO_CONFIG=true"
+      - "DISABLE_SECURITY_PLUGIN=true"
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD="OSap20251214165944osAP++"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+  opensearch-dashboards:
+    container_name: opensearch-dashboards
+    image: opensearchproject/opensearch-dashboards:latest
+    environment:
+      - OPENSEARCH_HOSTS=http://opensearch:9200
+    ports:
+      - "5601:5601"
